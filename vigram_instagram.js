@@ -1,6 +1,6 @@
 /**
  * Vigram
- * @version : 2.0.1
+ * @version : 2.1
  * @author: Nicolas (@neodern) Jamet <neodern@gmail.com>
  * @about: Download pics & videos from Vine & Instagram with a single click !
  */
@@ -80,155 +80,6 @@ function    ajax(verb, url, cb, index)
         url = '';
     xmlhttp.open(verb, url, true);
     xmlhttp.send();
-}
-
-/**
- * Callback event - Instagram Profile page.
- * @param elem
- */
-var getFromInstagramProfile = function(elem) {
-    if (hasClass(elem, 'Vigram'))
-        return;
-
-    elem.className += ' Vigram';
-    var urlToMedia = elem.querySelectorAll('a')[0].href;
-    ajax('GET', urlToMedia, function(content, index) {
-        var url = getRealImgFromInstagram(content);
-        var fName = url.split("/")[4];
-        var VigramLink = document.createElement('a');
-        var VigramButton = document.createElement('img');
-        VigramButton.className = "VigramEffect size25 invisible";
-        VigramButton.src = image;
-        VigramLink.className = "VigramProfileButton";
-        VigramLink.href = url;
-        VigramLink.setAttribute('download', fName);
-        VigramLink.appendChild(VigramButton);
-        elem.appendChild(VigramLink)
-    });
-};
-
-/**
- * Callback event - Instagram Timeline page.
- * @param elem
- */
-var getFromInstagramTimeline = function(elem) {
-    if (hasClass(elem, 'Vigram'))
-        return;
-
-    var url = null;
-    var video = elem.querySelectorAll('.Video')[0];
-    if (typeof video !== 'undefined')
-        url = video.getAttribute('src');
-    if (typeof url == 'undefined' || url === null)
-    {
-        var imgTag = elem.querySelector('.timelineCenter .timelineCard .mediaPhoto div')
-        if (!imgTag)
-            return;
-        url = imgTag.getAttribute('src');
-    }
-
-    elem.className += ' Vigram';
-    if (typeof url !== 'undefined') {
-        var fName = url.split("/")[4];
-
-        var VigramLink = document.createElement('a');
-        var VigramButton = document.createElement('span');
-
-        VigramLink.className = "timelineLikeButton";
-        VigramLink.style.background = 'url('+image+') no-repeat 50% 50%';
-        VigramLink.style.backgroundSize = '30px'
-        VigramLink.href = url;
-        VigramLink.setAttribute('download', fName);
-        VigramLink.appendChild(VigramButton);
-
-        var referenceNode = elem.querySelector('.timelineLikeButton');
-        referenceNode.parentNode.insertBefore(VigramLink, referenceNode.nextSibling);
-    }
-};
-
-/**
- * Callback event - Instagram profile page.
- * @param e
- */
-var mouseOverEvent = function(e) {
-    e = e ? e : window.event;
-    var reactId = e.target.getAttribute('data-reactid'),
-        photo = e.target.parentNode.parentNode.parentNode,
-        vigramId = photo.getAttribute('data-reactid'),
-        allMedias = document.querySelectorAll('.VigramEffet, .visible');
-
-    for (var j = 0; j < allMedias.length; ++j)
-    {
-        if (allMedias[j].id.split('-')[1] !== reactId)
-            allMedias[j].className = 'VigramEffect size25 invisible';
-    }
-
-    if (hasClass(photo, 'photo'))
-    {
-        var vigramMedia = photo.querySelector('.VigramEffect');
-        if (vigramMedia !== null)
-        {
-            vigramMedia.className = 'VigramEffect size25 visible';
-            vigramMedia.id = 'vigramId-' + vigramId;
-        }
-    }
-};
-
-/**
- * Instagram - Profile Page.
- * @param photoFeed
- */
-function            instagramProfile(photoFeed)
-{
-    if (typeof photoFeed !== 'undefined')
-    {
-        var medias = photoFeed.querySelectorAll('.photo');
-        var i = 0;
-        var interval = setInterval(function() {
-            if (i < medias.length)
-            {
-                getFromInstagramProfile(medias[i]);
-                medias[i].querySelector('.photoShadow').addEventListener("mouseover", mouseOverEvent);
-            }
-            else
-                clearInterval(interval);
-            i++;
-        }, 200);
-        photoFeed.addEventListener('DOMNodeInserted', function(e) {
-            e = e ? e : window.event;
-            var classes = e.target.className;
-            if (classes.indexOf('photo') !== -1)
-            {
-                getFromInstagramProfile(e.target);
-                e.target.querySelector('.photoShadow').addEventListener("mouseover", mouseOverEvent);
-            }
-        });
-    }
-
-}
-
-/**
- * Instagram - Timeline Page.
- * @param timelineFeed
- */
-function    instagramTimeline(timelineFeed)
-{
-    if (typeof timelineFeed !== 'undefined')
-    {
-        var medias = timelineFeed.querySelectorAll('.timelineItem');
-        for (var i = 0; i < medias.length; ++i)
-        {
-            getFromInstagramTimeline(medias[i]);
-        }
-        timelineFeed.addEventListener('DOMNodeInserted', function(e) {
-            e = e ? e : window.event;
-            var classes = e.target.className;
-            if (classes.indexOf('timelineItem') !== -1)
-            {
-                getFromInstagramTimeline(e.target);
-            }
-        });
-    }
 }
 
 document.querySelector('body').addEventListener('click', function() {
@@ -316,27 +167,233 @@ function    instagramSingle(singlePage)
 
 }
 
-var _location = null;
+var vigramButonTimeline = {
+    'link': 'a',
+    'button': 'span',
+    'classes': 'timelineLikeButton',
+    'background': 'url(' + image + ') no-repeat 50% 50%',
+    'size': '30px'
+};
 
-window.addEventListener('DOMSubtreeModified', function() {
-    var Feed;
-    if (_location === null)
-        _location = document.URL;
-    if (_location !== document.URL)
-    {
-        _location = document.URL;
-    }
 
-    if (typeof (Feed = document.querySelectorAll('.photo-feed')[0]) !== 'undefined')
+var vigramButtonProfile =  {
+    'link': 'a',
+    'button': 'img',
+    'classes': 'size25',
+    'background': '',
+    'size': '',
+    'src': image
+};
+
+function getVigramButton(element) {
+
+    var url = element.getAttribute('src');
+    var fName = url.split("/")[4];
+
+    var VigramLink = document.createElement('a');
+    var VigramButton = document.createElement('span');
+
+    VigramLink.className = "timelineLikeButton";
+    VigramLink.style.background = 'url(' + image + ') no-repeat 50% 50%';
+    VigramLink.style.backgroundSize = '30px';
+    VigramLink.href = url;
+    VigramLink.setAttribute('download', fName);
+    VigramLink.appendChild(VigramButton);
+
+    return VigramLink;
+}
+
+function getVigramButtonProfile(element, appendTo) {
+
+    var realUrl = element.parentNode.href.replace('http://', 'https://');
+    ajax('GET', realUrl, function(content, index) {
+        var url = getUrlFromInstagramMedia(content);
+        var fName = url.split("/")[4];
+
+        var VigramContainer = document.createElement('li');
+        var VigramLink = document.createElement('a');
+        var VigramButton = document.createElement('img');
+
+        VigramContainer.classList.add('VigramProfileButton');
+        VigramButton.classList.add('size20');
+        VigramButton.src = image;
+        VigramLink.href = url;
+        VigramLink.setAttribute('download', fName);
+
+        VigramLink.appendChild(VigramButton);
+        VigramContainer.appendChild(VigramLink);
+
+        appendTo.appendChild(VigramContainer);
+    });
+}
+
+
+
+function            getMedias()
+{
+    var elements = document.querySelectorAll('div.Image[src]:not(.timelineBookmarkAvatar):not(.timelineCommentAvatar)');
+    return elements;
+}
+
+function            setButton(elem)
+{
+    var button = getVigramButton(elem);
+
+    var commentNode = elem.parentNode.nextSibling;
+    if (!commentNode)
+        commentNode = elem.parentNode.parentNode.nextSibling;
+
+    if (!!commentNode)
     {
-        instagramProfile(Feed);
+        if (commentNode.className.indexOf('timelineLikes') !== -1)
+        {
+            commentNode.insertBefore(button, commentNode.querySelectorAll('.timelineLikeButton')[0]);
+        }
     }
-    else if (typeof (Feed = document.querySelectorAll('.timelineContainer')[0]) !== 'undefined')
+    elem.classList.add('Vigram');
+}
+
+
+function            isMedias(element)
+{
+    var classlist = element.classList;
+    if (element.localName !== 'div')
+        return false;
+
+    if (!classlist.contains('Image') && !classlist.contains('Video')
+        || classlist.contains('timelineBookmarkAvatar')
+        || classlist.contains('timelineCommentAvatar')
+        || classlist.contains('Vigram'))
+        return false;
+
+    if (!element.getAttribute('src'))
+        return false;
+
+    return true;
+}
+
+function        setButtonOnVideos()
+{
+    var elements = document.querySelectorAll('div.Video[src]:not(.Vigram)');
+    Array.prototype.forEach.call(elements, function(elem) {
+        setButton(elem);
+    });
+}
+
+function        setButtonOnProfile(element)
+{
+    if (element.classList.contains('vigram'))
+        return;
+
+    if (element.parentNode.classList.contains('tVideo'))
     {
-        instagramTimeline(Feed);
+        console.log(element.parentNode.parentNode);
+
+        // TODO
+        // Lui balancer l'url de la modal, pour récuperer la vidéo, il faudra surement faire de même pour la single page,
+        // Si c'est une vidéo.
+        ajax('GET', realUrl, function(content, index) {
+            var url = getUrlFromInstagramMedia(content);
+            var fName = url.split("/")[4];
+
+            var VigramContainer = document.createElement('li');
+            var VigramLink = document.createElement('a');
+            var VigramButton = document.createElement('img');
+
+            VigramContainer.classList.add('VigramProfileButton');
+            VigramButton.classList.add('size20');
+            VigramButton.src = image;
+            VigramLink.href = url;
+            VigramLink.setAttribute('download', fName);
+
+            VigramLink.appendChild(VigramButton);
+            VigramContainer.appendChild(VigramLink);
+
+            appendTo.appendChild(VigramContainer);
+        });
     }
-    else if (typeof (Feed = document.querySelectorAll('.lbAnimation')[0]) !== 'undefined')
+    element.classList.add('vigram');
+    setTimeout(function() {
+        getVigramButtonProfile(element, element.parentNode.nextSibling.firstChild);
+    }, 1000);
+}
+
+/**
+ * Instagram - Single page.
+ * @param singlePage
+ */
+function    instagramSingle(singlePage)
+{
+    if (typeof singlePage !== 'undefined')
     {
-        instagramSingle(Feed);
+        ajax('GET', null, function(content, index) {
+            var url = getUrlFromInstagramMedia(content);
+            if (typeof url === 'undefined')
+                return;
+
+            var fName = url.split("/")[3];
+            if (typeof fName === 'undefined' || fName === 'profiles')
+                return;
+
+            var is_pic = getTypeFromInstagramMedia(content);
+            var text_button = chrome.i18n.getMessage("dl_button_vid");
+            if (is_pic)
+                text_button = chrome.i18n.getMessage("dl_button_pic");
+
+            var topbar = document.querySelectorAll('.top-bar-actions')[0];
+            if (typeof topbar !== 'undefined')
+            {
+                if (!topbar.querySelector('#VigramSingleImg'))
+                {
+                    var VigramList = document.createElement('li'),
+                        VigramLink = document.createElement('a'),
+                        VigramSpan = document.createElement('span'),
+                        VigramButton = document.createElement('img'),
+                        VigramText = document.createElement('strong');
+
+                    VigramList.id = "VigramSingleImg";
+                    VigramList.style.width = '225px';
+
+                    VigramLink.href = url;
+                    VigramLink.setAttribute('download', fName);
+
+                    VigramSpan.style.float = 'left';
+                    VigramSpan.style.display = 'inline';
+                    VigramSpan.style.margin = '-4px 7px 1px 0px';
+
+                    VigramButton.src = image;
+
+                    VigramText.innerHTML = text_button;
+                    VigramText.style.display = 'block';
+
+                    VigramSpan.appendChild(VigramButton);
+                    VigramLink.appendChild(VigramSpan);
+                    VigramLink.appendChild(VigramText);
+                    VigramList.appendChild(VigramLink);
+                    topbar.appendChild(VigramList);
+                }
+            }
+        });
+    }
+}
+
+
+window.addEventListener('DOMSubtreeModified', function(e) {
+
+    var element = e.target;
+    if (isMedias(element))
+    {
+        if (document.URL === 'https://instagram.com/')
+        {
+            setButton(element);
+        }
+        else if (document.URL.search('/p/') !== -1) // single photo
+        {
+            instagramSingle(document.querySelectorAll('.lbAnimation')[0]);
+        }
+        else
+        {
+            setButtonOnProfile(element);
+        }
     }
 });
