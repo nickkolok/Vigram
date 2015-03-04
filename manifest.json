@@ -10,26 +10,32 @@
   },
   "default_locale" : "en",
   "manifest_version": 2,
-  
+
   "content_scripts": [ {
     "matches": [
-        "https://instagram.com/*",
-        "https://vine.co/*"
-    ],
-    "js": [ "vigram_instagram.js", "vigram_vine.js", "vigram.js"],
-    "css": ["medias/css/vigram.css"],
-    "all_frames": true,
-    "run_at": "document_end"
-  }],
-  
-  "permissions": [
-      "tabs",
-      "http://instagram.com/*",
+      "https://instagram.com/*",
       "https://vine.co/*"
+    ],
+    "js": [
+      "vigram_instagram.js",
+      "vigram_vine.js"
+    ],
+    "css": ["medias/css/vigram.css"]
+  }],
+
+  "background": {
+    "persistent": false,
+    "scripts": ["vigram.js"]
+  },
+
+  "permissions": [
+    "tabs",
+    "https://instagram.com/*",
+    "https://vine.co/*"
   ],
 
   "web_accessible_resources": [
-      "medias/images/vigram_25.png",
-      "medias/images/vigram_128.png"
+    "medias/images/vigram_25.png",
+    "medias/images/vigram_128.png"
   ]
 }

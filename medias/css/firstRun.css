@@ -1,0 +1,106 @@
+body {
+    margin: 0px;
+    background-color: #ecf0f1;
+    color: #222222;
+    font-family: 'proxima-nova', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #2980b9;
+}
+
+header {
+    background-color: #2980b9;
+    width: 100%;
+    height: 120px;
+    padding: 15px;
+}
+
+header section img {
+    margin-left: auto;
+    margin-right: auto;
+    width: 80px;
+    vertical-align: baseline;
+}
+
+header section p {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 20px;
+    color: #f6f5f6;
+}
+
+article {
+    margin: -40px auto 20px;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 5px;
+    width: 720px;
+    min-height: 100px;
+}
+
+article h1 {
+    margin-left: 5%;
+    font-size: 27px;
+    line-height: 32px;
+    margin-right: 35%;
+    color: #2980b9;
+}
+
+article p {
+    margin: 15px;
+}
+
+footer {
+    background-color: #2980b9;
+    width: 100%;
+    height: 60px;
+    position: fixed;
+    bottom: 0;
+}
+
+footer p {
+    text-align: center;
+    color: #f6f5f6;
+}
+
+#share {
+    background-color: #2980B9;
+    border-radius: 5px;
+    width: 680px;
+    margin: 0 auto 80px;
+    padding: 20px;
+    text-align: center;
+    color: #f6f5f6;
+}
+
+#share h2 {
+    color: #f6f5f6;
+}
+
+#donate-block {
+    /*border: 1px dashed #37506d;*/
+    /*border-style: none dashed;*/
+    width: 49%;
+    display: inline-block;
+}
+
+#follow-block {
+    width: 49%;
+    display: inline-block;
+    /*border-right: 1px dashed #37506d;*/
+}
+
+#donate-block, #follow-block {
+    min-width: 250px;
+    display: inline-block;
+    vertical-align: top;
+    padding: 5px 0 5px 0;
+    text-align: center;
+}
+
+.twitter-share-button {
+    margin-top: 10px;
+}

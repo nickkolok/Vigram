@@ -82,24 +82,28 @@ function    ajax(verb, url, cb, index)
     xmlhttp.send();
 }
 
+/**
+ * Instagram Modal
+ */
 document.querySelector('body').addEventListener('click', function() {
     document.querySelector('body').addEventListener('DOMNodeInserted', function(e) {
         e = e ? e : window.event;
         if (document.querySelector('div div .igDialogLayer .VerticalCenter'))
         {
-            var elem = e.target.querySelector('.Item .iMedia .Image');
+            if (e.target !== 'undefined')
+                return;
+            var elem = e.target.querySelector('.Item .iMedia .Image') || e.target.querySelector('.Item .iMedia .Video');
             if (elem === null || hasClass(elem, 'Vigram'))
                 return;
-
             var urlToMedia = elem.getAttribute('src'),
                 fName = urlToMedia.split('/')[4];
 
             elem.className += ' Vigram';
 
             var VigramLink = document.createElement('a');
-
             VigramLink.className = 'VigramModal';
             VigramLink.style.backgroundImage = "url("+image+")";
+            VigramLink.style.zIndex = '5';
             VigramLink.href = urlToMedia;
             VigramLink.setAttribute('download', fName);
             elem.appendChild(VigramLink);
@@ -108,83 +112,10 @@ document.querySelector('body').addEventListener('click', function() {
 });
 
 /**
- * Instagram - Single page.
- * @param singlePage
+ *
+ * @param element
+ * @returns {HTMLElement}
  */
-function    instagramSingle(singlePage)
-{
-    if (typeof singlePage !== 'undefined')
-    {
-        ajax('GET', null, function(content, index) {
-            var url = getUrlFromInstagramMedia(content);
-            if (typeof url === 'undefined')
-                return;
-
-            var fName = url.split("/")[3];
-            if (typeof fName === 'undefined' || fName === 'profiles')
-                return;
-
-            var is_pic = getTypeFromInstagramMedia(content);
-            var text_button = chrome.i18n.getMessage("dl_button_vid");
-            if (is_pic)
-                text_button = chrome.i18n.getMessage("dl_button_pic");
-
-            var topbar = document.querySelectorAll('.top-bar-actions')[0];
-            if (typeof topbar !== 'undefined')
-            {
-                if (!topbar.querySelector('#VigramSingleImg'))
-                {
-                    var VigramList = document.createElement('li'),
-                        VigramLink = document.createElement('a'),
-                        VigramSpan = document.createElement('span'),
-                        VigramButton = document.createElement('img'),
-                        VigramText = document.createElement('strong');
-
-                    VigramList.id = "VigramSingleImg";
-                    VigramList.style.width = '225px';
-
-                    VigramLink.href = url;
-                    VigramLink.setAttribute('download', fName);
-
-                    VigramSpan.style.float = 'left';
-                    VigramSpan.style.display = 'inline';
-                    VigramSpan.style.margin = '-4px 7px 1px 0px';
-
-                    VigramButton.src = image;
-
-                    VigramText.innerHTML = text_button;
-                    VigramText.style.display = 'block';
-
-                    VigramSpan.appendChild(VigramButton);
-                    VigramLink.appendChild(VigramSpan);
-                    VigramLink.appendChild(VigramText);
-                    VigramList.appendChild(VigramLink);
-                    topbar.appendChild(VigramList);
-                }
-            }
-        });
-    }
-
-}
-
-var vigramButonTimeline = {
-    'link': 'a',
-    'button': 'span',
-    'classes': 'timelineLikeButton',
-    'background': 'url(' + image + ') no-repeat 50% 50%',
-    'size': '30px'
-};
-
-
-var vigramButtonProfile =  {
-    'link': 'a',
-    'button': 'img',
-    'classes': 'size25',
-    'background': '',
-    'size': '',
-    'src': image
-};
-
 function getVigramButton(element) {
 
     var url = element.getAttribute('src');
@@ -203,9 +134,14 @@ function getVigramButton(element) {
     return VigramLink;
 }
 
+/**
+ *
+ * @param element
+ * @param appendTo
+ */
 function getVigramButtonProfile(element, appendTo) {
 
-    var realUrl = element.parentNode.href.replace('http://', 'https://');
+    var realUrl = element.href.replace('http://', 'https://');
     ajax('GET', realUrl, function(content, index) {
         var url = getUrlFromInstagramMedia(content);
         var fName = url.split("/")[4];
@@ -227,14 +163,10 @@ function getVigramButtonProfile(element, appendTo) {
     });
 }
 
-
-
-function            getMedias()
-{
-    var elements = document.querySelectorAll('div.Image[src]:not(.timelineBookmarkAvatar):not(.timelineCommentAvatar)');
-    return elements;
-}
-
+/**
+ *
+ * @param elem
+ */
 function            setButton(elem)
 {
     var button = getVigramButton(elem);
@@ -253,7 +185,11 @@ function            setButton(elem)
     elem.classList.add('Vigram');
 }
 
-
+/**
+ *
+ * @param element
+ * @returns {boolean}
+ */
 function            isMedias(element)
 {
     var classlist = element.classList;
@@ -272,27 +208,19 @@ function            isMedias(element)
     return true;
 }
 
-function        setButtonOnVideos()
-{
-    var elements = document.querySelectorAll('div.Video[src]:not(.Vigram)');
-    Array.prototype.forEach.call(elements, function(elem) {
-        setButton(elem);
-    });
-}
-
+/**
+ *
+ * @param element
+ */
 function        setButtonOnProfile(element)
 {
-    if (element.classList.contains('vigram'))
+    if (element.nextSibling.classList.contains('vigram'))
         return;
 
     if (element.parentNode.classList.contains('tVideo'))
     {
-        console.log(element.parentNode.parentNode);
-
-        // TODO
-        // Lui balancer l'url de la modal, pour récuperer la vidéo, il faudra surement faire de même pour la single page,
-        // Si c'est une vidéo.
-        ajax('GET', realUrl, function(content, index) {
+        var urlFromModal = element.parentNode.parentNode.href;
+        ajax('GET', urlFromModal, function(content, index) {
             var url = getUrlFromInstagramMedia(content);
             var fName = url.split("/")[4];
 
@@ -309,13 +237,13 @@ function        setButtonOnProfile(element)
             VigramLink.appendChild(VigramButton);
             VigramContainer.appendChild(VigramLink);
 
-            appendTo.appendChild(VigramContainer);
+            element.parentNode.parentNode.nextSibling.firstChild.appendChild(VigramContainer);
         });
     }
-    element.classList.add('vigram');
-    setTimeout(function() {
-        getVigramButtonProfile(element, element.parentNode.nextSibling.firstChild);
-    }, 1000);
+    else {
+        getVigramButtonProfile(element, element.nextSibling.firstChild);
+    }
+    element.nextSibling.classList.add('vigram');
 }
 
 /**
@@ -377,23 +305,40 @@ function    instagramSingle(singlePage)
     }
 }
 
+/**
+ *
+ */
+window.addEventListener('mousemove', function(e) {
+    if (e.target.classList.contains('pgmiImageLinkFocussed'))
+    {
+        setButtonOnProfile(e.target);
+    }
+});
 
+/**
+ *
+ */
+window.addEventListener('DOMNodeInserted', function(e) {
+    if (document.URL.search('/p/') !== -1 && !document.querySelector('div div .igDialogLayer .VerticalCenter'))
+        instagramSingle(document.querySelectorAll('.lbAnimation')[0]);
+    else
+    {
+        var elem = document.getElementById('VigramSingleImg');
+        if (elem)
+        {
+            elem.remove();
+        }
+    }
+});
+
+/**
+ *
+ */
 window.addEventListener('DOMSubtreeModified', function(e) {
 
     var element = e.target;
     if (isMedias(element))
     {
-        if (document.URL === 'https://instagram.com/')
-        {
-            setButton(element);
-        }
-        else if (document.URL.search('/p/') !== -1) // single photo
-        {
-            instagramSingle(document.querySelectorAll('.lbAnimation')[0]);
-        }
-        else
-        {
-            setButtonOnProfile(element);
-        }
+        setButton(element);
     }
 });
