@@ -81,8 +81,6 @@ footer p {
 }
 
 #donate-block {
-    /*border: 1px dashed #37506d;*/
-    /*border-style: none dashed;*/
     width: 49%;
     display: inline-block;
 }
@@ -90,7 +88,6 @@ footer p {
 #follow-block {
     width: 49%;
     display: inline-block;
-    /*border-right: 1px dashed #37506d;*/
 }
 
 #donate-block, #follow-block {
@@ -101,6 +98,19 @@ footer p {
     text-align: center;
 }
 
+#follow-block span a {
+    color: #f6f5f6;
+    text-decoration: none;
+}
+
 .twitter-share-button {
     margin-top: 10px;
+}
+
+#paypal-button {
+    height: 57px;
+}
+
+#paypal-button form {
+    padding-top: 15px;
 }
