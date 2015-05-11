@@ -6,5 +6,44 @@
     "dl_button_vid":{
         "message": "Download this video",
         "description": "text for video's download button"
+    },
+    "title_page": {
+        "message": "Vigram installed !"
+    },
+    "title_page_update": {
+        "message": "Vigram updated !"
+    },
+    "title": {
+        "message": "Vigram has been installed !"
+    },
+    "title_update": {
+        "message": "Vigram has been updated !"
+    },
+    "subtitle": {
+        "message": "You can now download pictures and videos from Instagram & Vine."
+    },
+    "content": {
+        "message": ""
+    },
+    "content_title": {
+        "message": "Do you like Vigram ? Show it to the developper !"
+    },
+    "content_list_1": {
+        "message": "Follow him on twitter @vigramApp"
+    },
+    "content_list_2": {
+        "message": "Share, talk about this app to your friends"
+    },
+    "content_list_3": {
+        "message": "You can also offer him a coffee or a beer using PayPal"
+    },
+    "share_title": {
+        "message": "Your support is important !"
+    },
+    "paypal": {
+        "message": "Support Vigram"
+    },
+    "twitter": {
+        "message": "Follow Vigram on Twitter"
     }
 }

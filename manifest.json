@@ -25,7 +25,7 @@
 
   "background": {
     "persistent": false,
-    "scripts": ["vigram.js"]
+    "scripts": ["vigram.js", "i18n.js"]
   },
 
   "permissions": [

@@ -2,40 +2,27 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>Vigram installed !</title>
+    <title i18n="title_page_update"></title>
     <link rel="stylesheet" href="medias/css/firstRun.css"/>
-    <div id="fb-root"></div>
-    <script>(function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.0";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));</script>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 </head>
 <body>
     <header>
         <section>
-            <p><img src="medias/images/vigram_128.png" alt="Vigram"/> Vigram a été mis à jour !</p>
+            <p><img src="medias/images/vigram_128.png" alt="Vigram"/><span i18n="title_update"></span></p>
         </section>
     </header>
 
     <article>
-        <h1>
-            Vous pouvez à présent télécharger les photos et les vidéos sur Instagram et Vine.
-        </h1>
-        <p>
-            Vigram demande du temps au quotidien pour être développé, maintenu à jour et Vigram sera toujours gratuit. <br />
-            Cependant si vous le souhaitez, vous pouvez contribuer et montrer votre soutien au développeur.<br />
-
-            1 &euro; représente un café et montre au développeur que vous appréciez son travail. <3
-        </p>
+        <h1 i18n="subtitle"></h1>
+        <p i18n="content_title"></p>
+        <ul>
+            <li i18n="content_list_1"></li>
+            <li i18n="content_list_2"></li>
+            <li i18n="content_list_3"></li>
+        </ul>
     </article>
     <section id="share">
-        <h2>
-            N'hésitez pas à soutenir le développeur
-        </h2>
+        <h2 i18n="share_title"></h2>
 
         <div id="donate-block">
             <div id="paypal-button">
@@ -47,17 +34,18 @@
                     <img alt="" border="0" src="https://www.paypalobjects.com/fr_FR/i/scr/pixel.gif" width="1" height="1">
                 </form>
             </div>
-            <span id="donate-label" class="i18n_firstRun_donate_label">Soutenir Vigram</span>
+            <span id="donate-label" i18n="paypal"></span>
         </div>
         <div id="follow-block">
             <div id="share-general" class="share-buttons">
                 <a href="https://twitter.com/VigramApp"><img height="50" src="medias/images/twitter.png" /></a>
             </div>
-            <span class="i18n_firstRun_share"><a href="https://twitter.com/VigramApp">Suivez Vigram sur Twitter</a></span>
+            <span><a href="https://twitter.com/VigramApp" i18n="twitter"></a></span>
         </div>
     </section>
     <footer>
         <p>Copyright &copy; Neodern 2015</p>
     </footer>
 </body>
+<script src="i18n.js"></script>
 </html>
