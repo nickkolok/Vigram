@@ -118,15 +118,20 @@ document.querySelector('body').addEventListener('click', function() {
  */
 function getVigramButton(element) {
 
+    console.log(element);
+
     var url = element.getAttribute('src');
     var fName = url.split("/")[4];
 
     var VigramLink = document.createElement('a');
     var VigramButton = document.createElement('span');
 
-    VigramLink.className = "timelineLikeButton";
+    VigramLink.className = "VigramButton -cx-PRIVATE-PostInfo__likeButton -cx-PRIVATE-LikeButton__root -cx-PRIVATE-Util__hideText";
     VigramLink.style.background = 'url(' + image + ') no-repeat 50% 50%';
     VigramLink.style.backgroundSize = '30px';
+    VigramLink.style.display = "block";
+    VigramLink.style.height = "50px";
+    VigramLink.style.width = "50px";
     VigramLink.href = url;
     VigramLink.setAttribute('download', fName);
     VigramLink.appendChild(VigramButton);
@@ -171,17 +176,15 @@ function            setButton(elem)
 {
     var button = getVigramButton(elem);
 
-    var commentNode = elem.parentNode.nextSibling;
-    if (!commentNode)
-        commentNode = elem.parentNode.parentNode.nextSibling;
+    var commentNode = elem.parentNode.parentNode.nextSibling;
+    if (commentNode.classList.contains('rbSensor'))
+        commentNode = elem.parentNode.parentNode.parentNode.nextSibling;
 
-    if (!!commentNode)
-    {
-        if (commentNode.className.indexOf('timelineLikes') !== -1)
-        {
-            commentNode.insertBefore(button, commentNode.querySelectorAll('.timelineLikeButton')[0]);
-        }
+    if (!!commentNode && !commentNode.classList.contains('Vigram')) {
+        commentNode.className += " Vigram";
+        commentNode.querySelectorAll('.-cx-PRIVATE-PostInfo__feedback')[0].insertBefore(button, commentNode.querySelectorAll('.-cx-PRIVATE-PostInfo__likeButton')[0]);
     }
+
     elem.classList.add('Vigram');
 }
 
@@ -195,6 +198,9 @@ function            isMedias(element)
     var classlist = element.classList;
     if (element.localName !== 'div')
         return false;
+
+    //console.log(element);
+
 
     if (!classlist.contains('Image') && !classlist.contains('Video')
         || classlist.contains('timelineBookmarkAvatar')
@@ -336,9 +342,8 @@ window.addEventListener('DOMNodeInserted', function(e) {
  */
 window.addEventListener('DOMSubtreeModified', function(e) {
 
-    var element = e.target;
-    if (isMedias(element))
-    {
-        setButton(element);
+    var medias = document.querySelectorAll('.-cx-PRIVATE-Photo__image, video');
+    for (var k in medias) {
+        setButton(medias[k]);
     }
 });
