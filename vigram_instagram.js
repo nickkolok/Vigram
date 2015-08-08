@@ -1,67 +1,11 @@
 /**
  * Vigram
- * @version : 2.1
+ * @version : 2.2
  * @author: Nicolas (@neodern) Jamet <neodern@gmail.com>
  * @about: Download pics & videos from Vine & Instagram with a single click !
  */
 
 var image = chrome.extension.getURL("medias/images/vigram_128.png");
-
-/**
- *
- * @param content
- * @returns {string}
- */
-function getUrlFromInstagramMedia(content) {
-    var start = content.indexOf('og:video" content="', 0);
-    if (start == -1) {
-        start = content.indexOf('og:image" content="', 0);
-    }
-    var end = content.indexOf('"', start + 19);
-    return content.substring(start + 19, end);
-}
-
-/**
- *
- * @param content
- * @returns bool
- */
-function getTypeFromInstagramMedia(content) {
-    return content.indexOf('og:video" content="', 0) === -1;
-}
-
-
-/**
- *
- * @param content
- * @returns {string}
- */
-function getRealImgFromInstagram(content) {
-    var url = getUrlFromInstagramMedia(content);
-    var is_pic = getTypeFromInstagramMedia(content);
-    if (!is_pic) {
-        url = url.replace("s3.amazonaws", "ak.instagram");
-        url = url.replace("_6.", "_7.");
-    }
-    return url;
-}
-
-/**
- * .hasClass from jQuery.
- * @param elem
- * @param className
- * @returns {boolean}
- */
-function hasClass(elem, className)
-{
-    var classes = elem.className;
-    if (typeof classes === 'undefined')
-        return false;
-    classes = classes.split(' ');
-    if (classes.indexOf(className) !== -1)
-        return true;
-    return false;
-}
 
 /**
  * AJAX call.
