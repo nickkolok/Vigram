@@ -118,7 +118,10 @@ document.querySelector('body').addEventListener('click', function() {
  */
 function getVigramButton(element) {
 
-    console.log(element);
+
+    if (element.tagName !== 'IMG' && !element.hasAttribute('src')) {
+        return null;
+    }
 
     var url = element.getAttribute('src');
     var fName = url.split("/")[4];
@@ -175,12 +178,23 @@ function getVigramButtonProfile(element, appendTo) {
 function            setButton(elem)
 {
     var button = getVigramButton(elem);
+    if (!button)
+        return;
 
     var commentNode = elem.parentNode.parentNode.nextSibling;
-    if (commentNode.classList.contains('rbSensor'))
-        commentNode = elem.parentNode.parentNode.parentNode.nextSibling;
 
-    if (!!commentNode && !commentNode.classList.contains('Vigram')) {
+    if (!commentNode) {
+        // C'est une vidéo
+        commentNode = elem.parentNode.parentNode.parentNode.parentNode.nextSibling;
+    }
+    else if (commentNode.classList.contains('-cx-PRIVATE-PhotoWithUserTags__photo') ||
+        commentNode.classList.contains('-cx-PRIVATE-PhotoWithUserTags__tagMeasurementLayer')) {
+        // C'est une photo avec un layer.
+        commentNode = elem.parentNode.parentNode.parentNode.nextSibling;
+    }
+
+    if (!!commentNode && !commentNode.classList.contains('Vigram') &&
+        typeof commentNode.querySelectorAll('.-cx-PRIVATE-PostInfo__feedback')[0] != 'undefined') {
         commentNode.className += " Vigram";
         commentNode.querySelectorAll('.-cx-PRIVATE-PostInfo__feedback')[0].insertBefore(button, commentNode.querySelectorAll('.-cx-PRIVATE-PostInfo__likeButton')[0]);
     }
@@ -343,7 +357,7 @@ window.addEventListener('DOMNodeInserted', function(e) {
 window.addEventListener('DOMSubtreeModified', function(e) {
 
     var medias = document.querySelectorAll('.-cx-PRIVATE-Photo__image, video');
-    for (var k in medias) {
+    for (var k = 0; k < medias.length; k++) {
         setButton(medias[k]);
     }
 });
