@@ -66,7 +66,7 @@ function getChannelsVigramButton(container, url, name)
 
 function getMeta(content)
 {
-    var pattern = 'twitter:player:stream" content="',
+    var pattern = '<video src="',
         start = content.indexOf(pattern, 0) + pattern.length,
         end = content.indexOf('>', start, 200) - 1,
         url = content.substring(start, end).split('?')[0],
