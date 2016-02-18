@@ -5,26 +5,7 @@
  * @about: Download pics & videos from Vine & Instagram with a single click !
  */
 
-var image = chrome.extension.getURL("medias/images/vigram_128.png");
-
-/**
- * AJAX call.
- * @param verb
- * @param url
- * @param cb
- */
-function    ajax(verb, url, cb, index)
-{
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function(url) {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
-            return cb(xmlhttp.responseText, index);
-    };
-    if (url === null)
-        url = '';
-    xmlhttp.open(verb, url, true);
-    xmlhttp.send();
-}
+var VigramLogo = chrome.extension.getURL("medias/images/vigram_128.png");
 
 /**
  *
@@ -33,19 +14,21 @@ function    ajax(verb, url, cb, index)
  */
 function getVigramButton(element) {
 
+    var media = element.querySelector('img');
+    if (!media)
+      media = element;
 
-    if (element.tagName !== 'IMG' && !element.hasAttribute('src')) {
-        return null;
-    }
+    if (media.tagName !== 'IMG' && media.tagName !== 'VIDEO')
+      return null;
 
-    var url = element.getAttribute('src');
+    var url = media.getAttribute('src');
     var fName = url.split("/")[4];
 
     var VigramLink = document.createElement('a');
     var VigramButton = document.createElement('span');
 
-    VigramLink.className = "VigramButton -cx-PRIVATE-PostInfo__likeButton -cx-PRIVATE-LikeButton__root -cx-PRIVATE-Util__hideText";
-    VigramLink.style.background = 'url(' + image + ') no-repeat 50% 50%';
+    VigramLink.className = "VigramButton _ebwb5 _1tv0k _345gm";
+    VigramLink.style.background = 'url(' + VigramLogo + ') no-repeat 50% 50%';
     VigramLink.style.backgroundSize = '30px';
     VigramLink.style.display = "block";
     VigramLink.style.height = "50px";
@@ -57,32 +40,36 @@ function getVigramButton(element) {
     return VigramLink;
 }
 
+function            isMediaBlock(node) {
+    return !!node.classList.contains('ResponsiveBlock') ||
+      !!(node.classList.contains('_22yr2') && !node.parentNode.classList.contains('ResponsiveBlock'));
+}
+
 /**
  *
  * @param elem
  */
 function            setButton(elem)
 {
+    if (elem.classList.contains('Vigram'))
+      return;
+
     var button = getVigramButton(elem);
     if (!button)
         return;
 
-    var commentNode = elem.parentNode.parentNode.nextSibling;
+    var node = elem;
+    while (!isMediaBlock(node) && node.tagName !== 'ARTICLE')
+      node = node.parentNode;
 
-    if (!commentNode) {
-        // C'est une vidéo
-        commentNode = elem.parentNode.parentNode.parentNode.parentNode.nextSibling;
-    }
-    else if (commentNode.classList.contains('-cx-PRIVATE-PhotoWithUserTags__photo') ||
-        commentNode.classList.contains('-cx-PRIVATE-PhotoWithUserTags__tagMeasurementLayer')) {
-        // C'est une photo avec un layer.
-        commentNode = elem.parentNode.parentNode.parentNode.nextSibling;
-    }
+    var commentNode = isMediaBlock(node) ? node.nextSibling : null;
+    if (!!commentNode && !commentNode.classList.contains('Vigram')) {
+      commentNode.className += " Vigram";
+      var addCommentSection = commentNode.querySelectorAll('._jveic')[0],
+          lovelyHearth = commentNode.querySelectorAll('._ebwb5._1tv0k._345gm')[0];
 
-    if (!!commentNode && !commentNode.classList.contains('Vigram') &&
-        typeof commentNode.querySelectorAll('.-cx-PRIVATE-PostInfo__feedback')[0] != 'undefined') {
-        commentNode.className += " Vigram";
-        commentNode.querySelectorAll('.-cx-PRIVATE-PostInfo__feedback')[0].insertBefore(button, commentNode.querySelectorAll('.-cx-PRIVATE-PostInfo__likeButton')[0]);
+        if (!!addCommentSection && !!lovelyHearth)
+          addCommentSection.insertBefore(button, lovelyHearth);
     }
 
     elem.classList.add('Vigram');
@@ -93,7 +80,7 @@ function            setButton(elem)
  */
 window.addEventListener('DOMSubtreeModified', function(e) {
 
-    var medias = document.querySelectorAll('.-cx-PRIVATE-Photo__image, video');
+    var medias = document.querySelectorAll('._jjzlb, video');
     for (var k = 0; k < medias.length; k++) {
         setButton(medias[k]);
     }

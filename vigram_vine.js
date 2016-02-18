@@ -8,6 +8,25 @@
 var image = chrome.extension.getURL("medias/images/vigram_128.png");
 
 /**
+ * AJAX call.
+ * @param verb
+ * @param url
+ * @param cb
+ */
+function    ajax(verb, url, cb, index)
+{
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function(url) {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+            return cb(xmlhttp.responseText, index);
+    };
+    if (url === null)
+        url = '';
+    xmlhttp.open(verb, url, true);
+    xmlhttp.send();
+}
+
+/**
  * Vine - Single page. <o/
  */
 function singleVine()
