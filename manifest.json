@@ -1,7 +1,7 @@
 {
   "name": "Vigram - Vine & Instagram downloader",
   "short_name": "Vigram",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Download pics & videos from Vine & Instagram with a single click !",
   "icons": {
     "16" : "medias/images/vigram_16.png",
@@ -13,7 +13,7 @@
 
   "content_scripts": [ {
     "matches": [
-      "https://instagram.com/*",
+      "https://www.instagram.com/*",
       "https://vine.co/*"
     ],
     "js": [
