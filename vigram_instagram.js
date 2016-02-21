@@ -5,7 +5,7 @@
  * @about: Download pics & videos from Vine & Instagram with a single click !
  */
 
-var VigramLogo = chrome.extension.getURL("medias/images/vigram_128.png");
+var VigramLogo = chrome.extension.getURL("medias/images/vigram_48.png");
 
 /**
  *
