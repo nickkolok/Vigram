@@ -51,7 +51,7 @@ function            isMediaBlock(node) {
  */
 function            setButton(elem)
 {
-    if (elem.classList.contains('Vigram'))
+    if (elem.classList.contains('Vigram') && elem.offsetWidth !== 600)
       return;
 
     var button = getVigramButton(elem);
@@ -70,6 +70,16 @@ function            setButton(elem)
 
         if (!!addCommentSection && !!lovelyHearth)
           addCommentSection.insertBefore(button, lovelyHearth);
+    } else if (!!commentNode) {
+      var oldNode = commentNode.querySelectorAll('.VigramButton')[0];
+      if (!oldNode)
+        return;
+
+      if (oldNode.href === button.href)
+        return;
+
+      var commentNodeRef = oldNode.parentNode;
+      commentNodeRef.replaceChild(button, commentNodeRef.querySelectorAll('.VigramButton')[0]);
     }
 
     elem.classList.add('Vigram');
