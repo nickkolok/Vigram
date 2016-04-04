@@ -21,8 +21,10 @@ function getVigramButton(element) {
     if (media.tagName !== 'IMG' && media.tagName !== 'VIDEO')
       return null;
 
-    var url = media.getAttribute('src');
-    var fName = url.split("/")[4];
+    var metas = {
+        url: media.getAttribute('src')
+    };
+    metas.name = metas.url.split("/")[4]
 
     var VigramLink = document.createElement('a');
     var VigramButton = document.createElement('span');
@@ -33,8 +35,8 @@ function getVigramButton(element) {
     VigramLink.style.display = "block";
     VigramLink.style.height = "50px";
     VigramLink.style.width = "50px";
-    VigramLink.href = url;
-    VigramLink.setAttribute('download', fName);
+    VigramLink.href = metas.url;
+    VigramLink.setAttribute('download', metas.name);
     VigramLink.appendChild(VigramButton);
 
     return VigramLink;
@@ -59,10 +61,10 @@ function            setButton(elem)
         return;
 
     var node = elem;
-    while (!isMediaBlock(node) && node.tagName !== 'ARTICLE')
-      node = node.parentNode;
+    while (node.tagName !== 'ARTICLE')
+        node = node.parentNode;
 
-    var commentNode = isMediaBlock(node) ? node.nextSibling : null;
+    var commentNode = node.children[node.children.length - 1];
     if (!!commentNode && !commentNode.classList.contains('Vigram')) {
       commentNode.className += " Vigram";
       var addCommentSection = commentNode.querySelectorAll('._jveic')[0],
@@ -80,6 +82,9 @@ function            setButton(elem)
 
       var commentNodeRef = oldNode.parentNode;
       commentNodeRef.replaceChild(button, commentNodeRef.querySelectorAll('.VigramButton')[0]);
+    } else {
+
+        return;
     }
 
     elem.classList.add('Vigram');
