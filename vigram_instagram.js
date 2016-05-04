@@ -68,10 +68,10 @@ function            setButton(elem)
     if (!!commentNode && !commentNode.classList.contains('Vigram')) {
       commentNode.className += " Vigram";
       var addCommentSection = commentNode.querySelectorAll('._jveic')[0],
-          lovelyHearth = commentNode.querySelectorAll('._ebwb5._1tv0k._345gm')[0];
-
-        if (!!addCommentSection && !!lovelyHearth)
-          addCommentSection.insertBefore(button, lovelyHearth);
+          lovelyHearth = commentNode.querySelectorAll('._ebwb5._1tv0k')[0];
+        if (!!addCommentSection && !!lovelyHearth) {
+            addCommentSection.insertBefore(button, lovelyHearth);
+        }
     } else if (!!commentNode) {
       var oldNode = commentNode.querySelectorAll('.VigramButton')[0];
       if (!oldNode)
