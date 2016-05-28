@@ -17,8 +17,11 @@ function getAuthor(article) {
 	if(!article)
 		article = document.querySelector('article');
 	try{
-		return article.querySelector('header > a').href.split('/')[3];
+		return document.querySelectorAll('a._ook48')[0].innerHTML;
 	}catch(e){
+		console.log('Author unknown');
+		console.error(e);
+		console.log(querySelectorAll('a._ook48'));
 		return "author_unknown";
 	}
 }
@@ -126,10 +129,12 @@ function            setButton(elem)
  */
 document.body.addEventListener('DOMSubtreeModified', function(e) {
 	vigramize();
+ /*
     var medias = document.querySelectorAll('._jjzlb, video');
     for (var k = 0; k < medias.length; k++) {
         setButton(medias[k]);
     }
+*/
 },false);
 
 //document.body.addEventListener('click',vigramize);
@@ -147,28 +152,63 @@ function vigramize() {
 	}
 }
 
+function getArticleURL(article){
+		var videos = article.querySelectorAll('video');
+		if(videos && videos[0] && videos[0].src){
+			return videos[0].src;
+		}
+
+		var possibleURLcontainers=article.querySelectorAll('div');
+		var encodedURL,decodedURL;
+		for(var i = 0; (i < possibleURLcontainers.length) && !decodedURL; i++){
+			encodedURL = possibleURLcontainers[i].getAttribute('data-reactid');
+			if(encodedURL)
+				decodedURL=decodeInstagramURL_safe(encodedURL);
+		}
+		return decodedURL;
+}
+
+
 function vigramizeArticle(article) {
 	try{
+		if(!article){
+			return;
+		}
 		var existingButtons = article.querySelectorAll('.VigramButton');
+		var author = getAuthor();
+		var decodedURL=getArticleURL(article);
 //		if(existingButtons.length)
 //			return;
 
 		for(var j=0; existingButtons.length && j<existingButtons.length; j++){
+			if(
+				existingButtons[j].getAttribute("data-url") == decodedURL
+			&&
+				existingButtons[j].getAttribute("data-author") == author
+			){
+				return;
+			}
 			existingButtons[j].remove();
 		}
 
-		var possibleURLcontainers=article.querySelectorAll('div');
-		var encodedURL, decodedURL;
-		for(var i = 0; (i < possibleURLcontainers.length) && !decodedURL; i++){
-			encodedURL = possibleURLcontainers[i].getAttribute('data-reactid');
-			if(encodedURL)
-				decodedURL = decodeInstagramURL_safe(encodedURL);
-		}
 //		possibleURLcontainers[i].addEventListener('DOMSubtreeModified',function(){vigramizeArticle(article)},false);
+/*
 		var vigramButton = createVigramButton({
 			url: decodedURL,
 			name: getAuthor() + "__" + decodedURL.split("/")[5], // Currently not working in Chrome :(
 		});
+*/
+		var vigramButton = document.createElement('iframe');
+		vigramButton.src="https://"+decodedURL.split("/")[2]+"/"+Math.random()+".html#"+JSON.stringify({
+			url: decodedURL,
+			name: author + "__" + decodedURL.split("/")[5],
+		});
+		vigramButton.width="50";
+		vigramButton.height="50";
+		vigramButton.className="VigramButton";
+		vigramButton.setAttribute("data-url",decodedURL);
+		vigramButton.setAttribute("data-author",author);
+
 		vigramButton.style.position = "absolute";
 		vigramButton.style.right = "-60px";
 		vigramButton.style.top = "0";

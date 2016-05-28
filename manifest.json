@@ -11,17 +11,31 @@
   "default_locale" : "en",
   "manifest_version": 2,
 
-  "content_scripts": [ {
-    "matches": [
-      "https://www.instagram.com/*",
-      "https://vine.co/*"
-    ],
-    "js": [
-      "vigram_instagram.js",
-      "vigram_vine.js"
-    ],
-    "css": ["medias/css/vigram.css"]
-  }],
+  "content_scripts": [
+	  {
+		"matches": [
+		  "https://www.instagram.com/*",
+		  "https://vine.co/*"
+		],
+		"js": [
+		  "vigram_instagram.js",
+		  "vigram_vine.js"
+		],
+		"css": ["medias/css/vigram.css"]
+	  }
+	,
+	  {
+		"matches": [
+		  "https://*.cdninstagram.com/*"
+		],
+		"js": [
+		  "vigram_iframe.js"
+		],
+		"css": ["medias/css/vigram.css"],
+		"all_frames": true
+	  }
+
+  ],
 
   "background": {
     "persistent": false,
