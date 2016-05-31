@@ -26,7 +26,18 @@
 	,
 	  {
 		"matches": [
-		  "https://*.cdninstagram.com/*"
+		  "https://vk.com/*"
+		],
+		"js": [
+		  "vigram_vk.js"
+		],
+		"css": ["medias/css/vigram.css"]
+	  }
+	,
+	  {
+		"matches": [
+		  "https://*.cdninstagram.com/*",
+		  "https://*.vk.me/*"
 		],
 		"js": [
 		  "vigram_iframe.js"

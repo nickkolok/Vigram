@@ -31,10 +31,10 @@ function createVigramButton(metas) {
 	if(/\.(jpg|mp4)$/.test(document.location.href)){
 		return;
 	}
+	var json=JSON.parse(document.location.hash.replace(/^#/,''));
 	document.body.innerHTML='';
 	document.body.style.padding=0;
 	document.body.style.margin=0;
-	var json=JSON.parse(document.location.hash.replace(/^#/,''));
 	document.body.appendChild(createVigramButton(json));
 })();
 
